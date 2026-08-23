@@ -1,0 +1,134 @@
+# Project Settings
+PROJECT_NAME           = "@CMAKE_PROJECT_NAME@"
+PROJECT_NUMBER         = "@PROJECT_VERSION@"
+PROJECT_BRIEF          = "KLV Library documentation"
+OUTPUT_DIRECTORY       = "@CMAKE_CURRENT_BINARY_DIR@"
+CREATE_SUBDIRS         = NO
+ALLOW_UNICODE_NAMES    = NO
+OUTPUT_LANGUAGE        = English
+BRIEF_MEMBER_DESC      = YES
+REPEAT_BRIEF           = YES
+ABBREVIATE_BRIEF       = 
+ALWAYS_DETAILED_SEC    = NO
+INLINE_INHERITED_MEMB  = NO
+FULL_PATH_NAMES        = YES
+STRIP_FROM_PATH        = "@PROJECT_SOURCE_DIR@"
+STRIP_FROM_INC_PATH    =
+
+# Build Options
+OPTIMIZE_OUTPUT_FOR_C  = NO
+OPTIMIZE_OUTPUT_JAVA   = NO
+OPTIMIZE_FOR_FORTRAN   = NO
+OPTIMIZE_OUTPUT_VHDL   = NO
+OPTIMIZE_OUTPUT_SLICE  = NO
+MARKDOWN_SUPPORT       = YES
+TOC_INCLUDE_HEADINGS   = 5
+
+# Input/Output
+INPUT                  = @PROJECT_SOURCE_DIR@/README.md @PROJECT_SOURCE_DIR@/include @PROJECT_SOURCE_DIR@/src
+USE_MDFILE_AS_MAINPAGE = README.md
+INPUT_ENCODING         = UTF-8
+FILE_PATTERNS          = *.md *.c *.cc *.cxx *.cpp *.c++ *.h *.hh *.hxx *.hpp *.h++
+RECURSIVE              = YES
+EXCLUDE                = 
+EXCLUDE_SYMLINKS       = NO
+EXCLUDE_PATTERNS       = */test/* */tests/* */examples/*
+EXCLUDE_SYMBOLS        = 
+EXAMPLE_PATH           = "@PROJECT_SOURCE_DIR@/examples"
+EXAMPLE_PATTERNS       = *
+EXAMPLE_RECURSIVE      = NO
+IMAGE_PATH             = "@PROJECT_SOURCE_DIR@/docs/images"
+HTML_HEADER            = 
+HTML_FOOTER            = 
+
+# Source Code
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = NO
+HIGHLIGHT_SOURCE       = YES
+STRIP_CODE_COMMENTS    = YES
+REFERENCED_BY_RELATION = YES
+REFERENCES_RELATION    = YES
+REFERENCES_LINK_SOURCE = YES
+
+# Diagnostics
+VERBATIM_HEADERS       = YES
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = NO
+WARN_FORMAT            = "$file:$line: $text"
+WARN_LOGFILE           = "@CMAKE_CURRENT_BINARY_DIR@/doxygen.log"
+
+# File Generation
+GENERATE_MAN           = YES
+GENERATE_XML           =  NO
+
+GENERATE_HTML          = YES
+SEARCHENGINE           = YES
+SERVER_BASED_SEARCH    =  NO
+HTML_OUTPUT            = html
+HTML_FILE_EXTENSION    = .html
+HTML_HEADER            = 
+HTML_FOOTER            = 
+HTML_STYLESHEET        = 
+HTML_EXTRA_STYLESHEET  = 
+HTML_COLORSTYLE_HUE    = 220
+HTML_COLORSTYLE_SAT    = 100
+HTML_COLORSTYLE_GAMMA  = 80
+GENERATE_DOCSET        = NO
+GENERATE_HTMLHELP      = NO
+GENERATE_QHP           = NO
+GENERATE_ECLIPSEHELP   = NO
+CHM_FILE               = 
+HHC_LOCATION           = 
+QCH_FILE               = 
+DISABLE_INDEX          = NO
+GENERATE_TREEVIEW      = YES
+ENUM_VALUES_PER_LINE   = 4
+
+# LaTeX/PDF
+GENERATE_LATEX         = NO
+LATEX_OUTPUT           = latex
+LATEX_CMD_NAME         = latex
+MAKEINDEX_CMD_NAME     = makeindex
+PDF_HYPERLINKS         = YES
+USE_PDFLATEX           = YES
+
+# Diagrams
+CLASS_DIAGRAMS         = YES
+HIDE_UNDOC_RELATIONS   = YES
+HAVE_DOT               = YES
+DOT_IMAGE_FORMAT       = svg
+DOT_TRANSPARENT        = YES
+CLASS_GRAPH            = YES
+COLLABORATION_GRAPH    = YES
+GROUP_GRAPHS           = YES
+UML_LOOK               = YES
+TEMPLATE_RELATIONS     = YES
+INCLUDE_GRAPH          = YES
+INCLUDED_BY_GRAPH      = YES
+CALL_GRAPH             = YES
+CALLER_GRAPH           = YES
+INTERACTIVE_SVG        = YES
+
+# Messages
+QUIET                  = NO
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = NO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

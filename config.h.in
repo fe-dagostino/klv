@@ -1,0 +1,13 @@
+#ifndef KLV_CONFIG_IN_H
+#define KLV_CONFIG_IN_H
+
+#define KLV_VERSION_MAJOR                @klv_VERSION_MAJOR@
+#define KLV_VERSION_MINOR                @klv_VERSION_MINOR@
+#define KLV_VERSION_PATCH                @klv_VERSION_PATCH@
+
+#define KLV_VERSION                      v@klv_VERSION_MAJOR@_@klv_VERSION_MINOR@_@klv_VERSION_PATCH@
+
+#define make_string(value)               #value
+#define make_version(major,minor,patch)  make_string(major) "." make_string(minor) "." make_string(patch) 
+
+#endif /* KLV_CONFIG_IN_H */
