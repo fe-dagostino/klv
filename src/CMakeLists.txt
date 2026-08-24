@@ -13,9 +13,19 @@ set( KLV_INCLUDE   ${PROJECT_SOURCE_DIR}/include/klv-common.h
    )
 
 message( INFO " add_library( ${PROJECT_NAME} INTERFACE ${KLV_INCLUDE} )" )
-add_library( ${PROJECT_NAME} INTERFACE ${KLV_INCLUDE} )
+add_library( ${PROJECT_NAME} INTERFACE )
+
+target_include_directories(${PROJECT_NAME} INTERFACE
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+)
 
 install(FILES ${KLV_INCLUDE} DESTINATION include )
 
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets )
 
+install(EXPORT      ${PROJECT_NAME}Targets
+        FILE        ${PROJECT_NAME}Targets.cmake
+        NAMESPACE   ${PROJECT_NAME}::
+        DESTINATION lib/cmake/${PROJECT_NAME}
+       )
