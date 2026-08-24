@@ -12,7 +12,10 @@ set( KLV_INCLUDE   ${PROJECT_SOURCE_DIR}/include/klv-common.h
                    ${PROJECT_SOURCE_DIR}/include/misb0903.h
    )
 
-message( INFO " add_library( ${CMAKE_PROJECT_NAME} INTERFACE ${KLV_INCLUDE} )" )
-add_library( ${CMAKE_PROJECT_NAME} INTERFACE ${KLV_INCLUDE} )
+message( INFO " add_library( ${PROJECT_NAME} INTERFACE ${KLV_INCLUDE} )" )
+add_library( ${PROJECT_NAME} INTERFACE ${KLV_INCLUDE} )
 
-install(TARGETS ${CMAKE_PROJECT_NAME} DESTINATION bin)
+install(FILES ${KLV_INCLUDE} DESTINATION include )
+
+install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+

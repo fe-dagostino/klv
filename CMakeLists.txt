@@ -5,7 +5,7 @@ project(klv
         LANGUAGES CXX C
        )
 
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/${CMAKE_PROJECT_NAME}-config.h)
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}-config.h)
 
 # If not set, the latest supported standard for your compiler is used
 # You can later set fine-grained standards for each target using `target_compile_features`

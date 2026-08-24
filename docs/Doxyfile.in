@@ -1,5 +1,5 @@
 # Project Settings
-PROJECT_NAME           = "@CMAKE_PROJECT_NAME@"
+PROJECT_NAME           = "@PROJECT_NAME@"
 PROJECT_NUMBER         = "@PROJECT_VERSION@"
 PROJECT_BRIEF          = "KLV Library documentation"
 OUTPUT_DIRECTORY       = "@CMAKE_CURRENT_BINARY_DIR@"
