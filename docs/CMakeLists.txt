@@ -18,6 +18,6 @@ if(Doxygen_FOUND)
                     COMMENT "Generating documentation with Doxygen"
                     VERBATIM
                    )
-endif()  
+endif()
 
 

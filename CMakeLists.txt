@@ -51,8 +51,6 @@ option(KLV_ENABLE_IWYU          "Enable/Disable include what you use."          
 option(KLV_ENABLE_PACKAGING     "Enable/Disable packaging."                               ON)
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include/            )
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include/bdo         )
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include/controllers )
 
 # Add subdirectory with main application
 add_subdirectory(src)
