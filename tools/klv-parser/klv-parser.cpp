@@ -5,51 +5,57 @@
 
 struct test_callbacks_t
 {
-  inline klv::cb_result_t on_unconfigured_tag(uint8_t tag) noexcept(true)
+  inline klv::cb_result_t on_unconfigured_tag([[maybe_unused]] klv::misb::standard_t std, uint8_t tag) noexcept(true)
   {
-    std::cout << "[Tag " << std::setw(3) << (int)tag << "] not configured \n";
+    std::cout << "[Warn] Tag [" << std::setw(3) << (int)tag << "] not configured \n";
     return klv::cb_result_t::success;
   }
 
-  klv::cb_result_t on_numeric_tag(uint8_t tag, const klv::metadata_t& meta) noexcept(true)
+  klv::cb_result_t on_numeric_tag([[maybe_unused]] klv::misb::standard_t std, uint8_t tag, [[maybe_unused]] const klv::metadata_t& meta) noexcept(true)
   {
     std::cout << "[LDS] Numeric Tag: " << (int)tag << "\n";
     return klv::cb_result_t::success;
   }
 
-  klv::cb_result_t on_string_tag(uint8_t tag, const klv::metadata_t& meta) noexcept(true)
+  klv::cb_result_t on_string_tag([[maybe_unused]] klv::misb::standard_t std, uint8_t tag, [[maybe_unused]] const klv::metadata_t& meta) noexcept(true)
   {
     std::cout << "[LDS] String Tag: " << (int)tag << "\n";
     return klv::cb_result_t::success;
   }
 
-  klv::cb_result_t on_timestamp_tag(uint8_t tag, const klv::metadata_t& meta, uint64_t raw_time) noexcept(true)
+  klv::cb_result_t on_timestamp_tag([[maybe_unused]] klv::misb::standard_t std, uint8_t tag, [[maybe_unused]] const klv::metadata_t& meta, [[maybe_unused]] uint64_t raw_time) noexcept(true)
   {
     std::cout << "[LDS] Timestamp Tag: " << (int)tag << " | Time: " << raw_time << "\n";
     return klv::cb_result_t::success;
   }
 
-  klv::cb_result_t on_checksum_tag(uint8_t tag, const klv::metadata_t& meta, uint16_t checksum) noexcept(true)
+  klv::cb_result_t on_checksum_tag([[maybe_unused]] klv::misb::standard_t std, uint8_t tag, [[maybe_unused]] const klv::metadata_t& meta, [[maybe_unused]] uint16_t checksum) noexcept(true)
   {
     std::cout << "[LDS] Checksum Tag: " << (int)tag << " | Value: 0x" << std::hex << checksum << std::dec << "\n";
     return klv::cb_result_t::success;
   }
 
-  klv::cb_result_t on_bitfield_tag(uint8_t tag, const klv::metadata_t& meta, uint8_t flags) noexcept(true)
+  klv::cb_result_t on_bitfield_tag([[maybe_unused]] klv::misb::standard_t std, uint8_t tag, [[maybe_unused]] const klv::metadata_t& meta, [[maybe_unused]] uint8_t flags) noexcept(true)
   {
     std::cout << "[LDS] Bitfield Tag: " << (int)tag << " | Flags: 0x" << std::hex << (int)flags << std::dec << "\n";
     return klv::cb_result_t::success;
   }
 
-  klv::cb_result_t on_st0604_pts(uint64_t pts) noexcept(true)
+  klv::cb_result_t on_pts([[maybe_unused]] klv::misb::standard_t std, uint64_t pts) noexcept(true)
   {
     std::cout << "[Preamble] ST 0604 Transport PTS: " << pts << "\n";
     return klv::cb_result_t::success;
   }
 
-  klv::cb_result_t on_vmti_target(uint32_t target_id, uint8_t confidence) noexcept(true)
+  klv::cb_result_t on_vmti_target( [[maybe_unused]] klv::misb::standard_t std, uint32_t target_id, uint8_t confidence) noexcept(true)
   {
     std::cout << "[VMTI] Target ID: " << target_id << " | Confidence: " << (int)confidence << "%\n";
+    return klv::cb_result_t::success;
+  }
+
+  klv::cb_result_t on_viewport_position(klv::misb::standard_t std, uint8_t tag, const klv::metadata_t& meta, double x, double y) noexcept(true)
+  {
+    std::cout << "Standard: " << static_cast<uint32_t>(std) << " [Tag " << (int)tag << "] " << meta.name << " Pos : [" << x << ", " << y << "]\n";
     return klv::cb_result_t::success;
   }
 

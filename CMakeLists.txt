@@ -56,27 +56,32 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include/            )
 add_subdirectory(src)
 
 # Add subdirectory with tools
-if(KVL_BUILD_TOOLS)
+if(KLV_BUILD_TOOLS)
+  message(STATUS "  - TOOLS     Enabled")
   add_subdirectory(tools)
 endif()
 
 # Add subdirectory with tests
 if(KLV_BUILD_TESTS)
+  message(STATUS "  - TESTS     Enabled")
   enable_testing()
   add_subdirectory(tests)
 endif()
 
 # Add subdirectory with docs 
 if(KLV_BUILD_DOCS)
+  message(STATUS "  - DOC       Enabled")
   add_subdirectory(docs)
 endif()
 
 # Enable cppcheck
 if(KLV_ENABLE_CPPCHECK)
+  message(STATUS "  - CPPCHECK  Enabled")
   include(cppcheck)
 endif()
 
 # Enable packaging
 if(KLV_ENABLE_PACKAGING)
+  message(STATUS "  - PACKAGING Enabled")
   include(packages)
 endif()

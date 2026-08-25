@@ -46,37 +46,46 @@ namespace TargetReportTags
 template <callbacks_interface callbacks_t>
 class ST_0903_Parser : public parser_base<callbacks_t>
 {
+  using parser_base<callbacks_t>::callbacks;
+  using parser_base<callbacks_t>::standard;
+  using parser_base<callbacks_t>::max_tags;
+  using parser_base<callbacks_t>::m_tags;
+  using parser_base<callbacks_t>::m_tag_readers;
 public:
   ST_0903_Parser(callbacks_t cb = callbacks_t{})
-    : parser_base<callbacks_t>(cb)
+    : parser_base<callbacks_t>(klv::misb::standard_t::st_0903_vmti_track, 102, cb)
   {
     constexpr int64_t d_1b_u = 255;
     constexpr int64_t d_2b_u = 65535;
 
     // Map out the MISB ST 0903 standard tag layout coordinates
-    parser_base<callbacks_t>::m_tags[VmtiTags::Checksum]                 = { element_t::Checksum, "VMTI Checksum", "hex" };
-    parser_base<callbacks_t>::m_tags[VmtiTags::PrecisionTimeStamp]       = { element_t::Timestamp, "VMTI Precision Time Stamp", "microseconds" };
-    parser_base<callbacks_t>::m_tags[VmtiTags::SystemName]               = { element_t::String, "VMTI System Name" };
-    parser_base<callbacks_t>::m_tags[VmtiTags::SourceSensor]             = { element_t::String, "VMTI Source Sensor" };
+    m_tags[VmtiTags::Checksum]                 = { element_t::Checksum, "VMTI Checksum", "hex" };
+    m_tags[VmtiTags::PrecisionTimeStamp]       = { element_t::Timestamp, "VMTI Precision Time Stamp", "microseconds" };
+    m_tags[VmtiTags::SystemName]               = { element_t::String, "VMTI System Name" };
+    m_tags[VmtiTags::SourceSensor]             = { element_t::String, "VMTI Source Sensor" };
     
     // Tags 5, 6, and 7 are structural packs/series containers rather than simple scalars.
     // For baseline parsing safety, we configure their names to prevent unconfigured alerts.
-    parser_base<callbacks_t>::m_tags[VmtiTags::NumberDetectedTargets]    = { element_t::Unconfigured, "Number of Detected Targets" };
-    parser_base<callbacks_t>::m_tags[VmtiTags::TargetReportSeries]       = { element_t::Unconfigured, "Target Report Series" };
-    parser_base<callbacks_t>::m_tags[VmtiTags::AlgorithmSeries]          = { element_t::Unconfigured, "Algorithm Series (Pack)" };
+    m_tags[VmtiTags::NumberDetectedTargets]    = { element_t::Unconfigured, "Number of Detected Targets" };
+    m_tags[VmtiTags::TargetReportSeries]       = { element_t::Unconfigured, "Target Report Series" };
+    m_tags[VmtiTags::AlgorithmSeries]          = { element_t::Unconfigured, "Algorithm Series (Pack)" };
 
-    parser_base<callbacks_t>::m_tags[VmtiTags::VmtiHorizontalFov]        = { element_t::MappedNumeric, "VMTI Horizontal FOV", "degrees", 0, d_2b_u, 0.0, 180.0 };
-    parser_base<callbacks_t>::m_tags[VmtiTags::VmtiVerticalFov]          = { element_t::MappedNumeric, "VMTI Vertical FOV", "degrees", 0, d_2b_u, 0.0, 180.0 };
-    parser_base<callbacks_t>::m_tags[VmtiTags::VmtiLdsVolumeCountryCode] = { element_t::String, "VMTI LDS Volume Country Code" };
-    parser_base<callbacks_t>::m_tags[VmtiTags::VmtiVersion]              = { element_t::MappedNumeric, "VMTI Version Number", "version", 0, d_1b_u, 0.0, 255.0 };
+    m_tags[VmtiTags::VmtiHorizontalFov]        = { element_t::MappedNumeric, "VMTI Horizontal FOV", "degrees", 0, d_2b_u, 0.0, 180.0 };
+    m_tags[VmtiTags::VmtiVerticalFov]          = { element_t::MappedNumeric, "VMTI Vertical FOV", "degrees", 0, d_2b_u, 0.0, 180.0 };
+    m_tags[VmtiTags::VmtiLdsVolumeCountryCode] = { element_t::String, "VMTI LDS Volume Country Code" };
+    m_tags[VmtiTags::VmtiVersion]              = { element_t::MappedNumeric, "VMTI Version Number", "version", 0, d_1b_u, 0.0, 255.0 };
   }
 
-  void parse_packet(const uint8_t* stream, size_t size)
+  [[nodiscard]]
+  bool parse_packet(const uint8_t* stream, size_t size) noexcept(true)
   {
     size_t index = 0;
     while (index < size)
     {
       uint8_t tag = stream[index++];
+      if ( (tag == 0) || (tag >= max_tags()) ) [[unlikely]]
+        continue;
+
       if (index >= size)
         break;
 
@@ -99,7 +108,7 @@ public:
       if (index + length > size)
         break;
 
-      auto&          meta    = parser_base<callbacks_t>::m_tags[tag];
+      auto&          meta    = m_tags[tag];
       const uint8_t* val_ptr = &stream[index];
 
       if (tag == VmtiTags::TargetReportSeries)
@@ -108,10 +117,13 @@ public:
       }
       else
       {
-        auto tag_reader_result = parser_base<callbacks_t>::m_tag_readers[static_cast<size_t>(meta.type)](this,tag,val_ptr,length,meta);
+        if (m_tag_readers[static_cast<size_t>(meta.type)](this,tag,val_ptr,length,meta) != klv::cb_result_t::success)
+          return false;
       }
       index += length;
     }
+
+    return true;
   }
 
 private:
@@ -177,7 +189,7 @@ private:
         sub_idx += sub_len;
       }
 
-      parser_base<callbacks_t>::callbacks().on_vmti_target(target_id, confidence);
+      callbacks().on_vmti_target(standard(), target_id, confidence);
 
       idx += target_pack_len;
     }

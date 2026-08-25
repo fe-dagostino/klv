@@ -52,56 +52,65 @@ namespace SecurityTags {
 template <callbacks_interface callbacks_t>
 class ST_0102_Parser : protected parser_base<callbacks_t>
 {
+  using parser_base<callbacks_t>::callbacks;
+  using parser_base<callbacks_t>::standard;
+  using parser_base<callbacks_t>::max_tags;
+  using parser_base<callbacks_t>::m_tags;
+  using parser_base<callbacks_t>::m_tag_readers;
 public:
   ST_0102_Parser(callbacks_t cb = callbacks_t{})
-    : parser_base<callbacks_t>(cb)
+    : parser_base<callbacks_t>(klv::misb::standard_t::st_0102_security, 24, cb)
   {
     // Numeric Constraint Threshold Bounds
     constexpr int64_t max_1b_u = 255;
     constexpr int64_t max_2b_u = 65535;
 
     // 1. Core Classification Parameters (Corrected to MappedNumeric for Enum Resolution!)
-    parser_base<callbacks_t>::m_tags[SecurityTags::SecurityClassification]         = { element_t::MappedNumeric, "Security Classification", "enum", 0, max_1b_u, 0.0, 255.0 };
-    parser_base<callbacks_t>::m_tags[SecurityTags::ClassifyingCountryCodingMethod] = { element_t::MappedNumeric, "Classifying Country Coding Method", "enum", 0, max_1b_u, 0.0, 255.0 };
-    parser_base<callbacks_t>::m_tags[SecurityTags::ClassifyingCountry]             = { element_t::String, "Classifying Country" };
-    
+    m_tags[SecurityTags::SecurityClassification]         = { element_t::MappedNumeric, "Security Classification", "enum", 0, max_1b_u, 0.0, 255.0 };
+    m_tags[SecurityTags::ClassifyingCountryCodingMethod] = { element_t::MappedNumeric, "Classifying Country Coding Method", "enum", 0, max_1b_u, 0.0, 255.0 };
+    m_tags[SecurityTags::ClassifyingCountry]             = { element_t::String, "Classifying Country" };
+
     // 2. Compartments & Caveats
-    parser_base<callbacks_t>::m_tags[SecurityTags::SecuritySCI_SHIInformation]     = { element_t::String, "SCI/SHI Information" };
-    parser_base<callbacks_t>::m_tags[SecurityTags::SecurityCaveats]                = { element_t::String, "Security Caveats" };
-    parser_base<callbacks_t>::m_tags[SecurityTags::ReleasingInstructions]          = { element_t::String, "Releasing Instructions" };
-    
+    m_tags[SecurityTags::SecuritySCI_SHIInformation]     = { element_t::String, "SCI/SHI Information" };
+    m_tags[SecurityTags::SecurityCaveats]                = { element_t::String, "Security Caveats" };
+    m_tags[SecurityTags::ReleasingInstructions]          = { element_t::String, "Releasing Instructions" };
+
     // 3. Administrative Lineage Records
-    parser_base<callbacks_t>::m_tags[SecurityTags::ClassifiedBy]                   = { element_t::String, "Classified By" };
-    parser_base<callbacks_t>::m_tags[SecurityTags::DerivedFrom]                    = { element_t::String, "Derived From" };
-    parser_base<callbacks_t>::m_tags[SecurityTags::ClassificationReason]           = { element_t::String, "Classification Reason" };
-    parser_base<callbacks_t>::m_tags[SecurityTags::DeclassificationDate]           = { element_t::String, "Declassification Date" };
-    parser_base<callbacks_t>::m_tags[SecurityTags::ClassificationAndMarkingSystem] = { element_t::String, "Classification Marking System" };
-    
+    m_tags[SecurityTags::ClassifiedBy]                   = { element_t::String, "Classified By" };
+    m_tags[SecurityTags::DerivedFrom]                    = { element_t::String, "Derived From" };
+    m_tags[SecurityTags::ClassificationReason]           = { element_t::String, "Classification Reason" };
+    m_tags[SecurityTags::DeclassificationDate]           = { element_t::String, "Declassification Date" };
+    m_tags[SecurityTags::ClassificationAndMarkingSystem] = { element_t::String, "Classification Marking System" };
+
     // 4. Object Targeting Frameworks
-    parser_base<callbacks_t>::m_tags[SecurityTags::ObjectCountryCodingMethod]      = { element_t::MappedNumeric, "Object Country Coding Method", "enum", 0, max_1b_u, 0.0, 255.0 };
-    parser_base<callbacks_t>::m_tags[SecurityTags::ObjectCountry]                  = { element_t::String, "Object Country" };
-    parser_base<callbacks_t>::m_tags[SecurityTags::ClassificationComments]         = { element_t::String, "Classification Comments" };
-    
+    m_tags[SecurityTags::ObjectCountryCodingMethod]      = { element_t::MappedNumeric, "Object Country Coding Method", "enum", 0, max_1b_u, 0.0, 255.0 };
+    m_tags[SecurityTags::ObjectCountry]                  = { element_t::String, "Object Country" };
+    m_tags[SecurityTags::ClassificationComments]         = { element_t::String, "Classification Comments" };
+
     // 5. High-Throughput Identifiers (Mapped as Numerics to avoid payload copies)
-    parser_base<callbacks_t>::m_tags[SecurityTags::StreamID]                       = { element_t::MappedNumeric, "Stream ID", "id", 0, max_1b_u, 0.0, 255.0 };
-    parser_base<callbacks_t>::m_tags[SecurityTags::TransportStreamID]              = { element_t::MappedNumeric, "Transport Stream ID", "id", 0, max_2b_u, 0.0, 65535.0 };
-    
+    m_tags[SecurityTags::StreamID]                       = { element_t::MappedNumeric, "Stream ID", "id", 0, max_1b_u, 0.0, 255.0 };
+    m_tags[SecurityTags::TransportStreamID]              = { element_t::MappedNumeric, "Transport Stream ID", "id", 0, max_2b_u, 0.0, 65535.0 };
+
     // 6. Modern System Extensions
-    parser_base<callbacks_t>::m_tags[SecurityTags::ItemDesignatorId]               = { element_t::String, "Item Designator ID" };
-    parser_base<callbacks_t>::m_tags[SecurityTags::Version]                        = { element_t::MappedNumeric, "Security Version", "version", 0, max_2b_u, 0.0, 65535.0 };
-    parser_base<callbacks_t>::m_tags[SecurityTags::ObjectCountryCodes]             = { element_t::String, "Object Country Codes List" };
+    m_tags[SecurityTags::ItemDesignatorId]               = { element_t::String, "Item Designator ID" };
+    m_tags[SecurityTags::Version]                        = { element_t::MappedNumeric, "Security Version", "version", 0, max_2b_u, 0.0, 65535.0 };
+    m_tags[SecurityTags::ObjectCountryCodes]             = { element_t::String, "Object Country Codes List" };
 
     // Note: Tag 15 (UMID) is omitted from this base configuration loop as it requires a 
     // specialized raw byte payload array policy callback (on_security_umid_tag) 
     // rather than standard String or MappedNumeric processing.
   }
 
-  void parse_packet(const uint8_t* stream, size_t size)
+  [[nodiscard]]
+  bool parse_packet(const uint8_t* stream, size_t size) noexcept(true)
   {
     size_t index = 0;
     while (index < size)
     {
       uint8_t tag = stream[index++];
+      if ( (tag == 0) || (tag >= max_tags()) ) [[unlikely]]
+        continue;
+
       if (index >= size)
         break;
 
@@ -124,22 +133,25 @@ public:
       if (index + length > size)
         break;
 
-      auto&          meta    = parser_base<callbacks_t>::m_tags[tag];
+      auto&          meta    = m_tags[tag];
       const uint8_t* val_ptr = &stream[index];
 
       // Specialized routing intercept for Tag 15 (UMID Byte Blocks)
       if (tag == SecurityTags::UMID)
       {
         // Drops directly out to custom array handlers on your policy
-        parser_base<callbacks_t>::callbacks().on_checksum_tag(tag, meta, static_cast<uint16_t>(length)); // Reuses validation anchors
+        callbacks().on_checksum_tag(standard(), tag, meta, static_cast<uint16_t>(length)); // Reuses validation anchors
         index += length;
         continue;
       }
 
-      auto tag_reader_result = parser_base<callbacks_t>::m_tag_readers[static_cast<size_t>(meta.type)](this,tag,val_ptr,length,meta);
+      if ( m_tag_readers[static_cast<size_t>(meta.type)](this,tag,val_ptr,length,meta) != klv::cb_result_t::success)
+        return false;
 
       index += length;
     }
+
+    return true;
   }
 
 private:
