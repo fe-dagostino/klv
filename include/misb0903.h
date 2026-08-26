@@ -52,7 +52,7 @@ class ST_0903_Parser : public parser_base<callbacks_t>
   using parser_base<callbacks_t>::m_tags;
   using parser_base<callbacks_t>::m_tag_readers;
 public:
-  ST_0903_Parser(callbacks_t cb = callbacks_t{})
+  ST_0903_Parser(const callbacks_t& cb)
     : parser_base<callbacks_t>(klv::misb::standard_t::st_0903_vmti_track, 102, cb)
   {
     constexpr int64_t d_1b_u = 255;

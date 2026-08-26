@@ -24,7 +24,7 @@ class ST_0605_Parser : public parser_base<callbacks_t>
   using parser_base<callbacks_t>::m_tags;
   using parser_base<callbacks_t>::m_tag_readers;
 public:
-  ST_0605_Parser(callbacks_t cb = callbacks_t{})
+  ST_0605_Parser(const callbacks_t& cb)
     : parser_base<callbacks_t>(klv::misb::standard_t::st_0605_microsecond_timestamp, 3, cb)
   {
     // Map out the standard flat root tag definitions for ST 0605

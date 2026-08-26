@@ -36,7 +36,7 @@ class ST_0602_Parser : public parser_base<callbacks_t>
 
 public:
   /***/
-  ST_0602_Parser(callbacks_t cb = callbacks_t{})
+  ST_0602_Parser(const callbacks_t& cb)
     : parser_base<callbacks_t>(klv::misb::standard_t::st_0602_annotation, 22, cb)
   {
     constexpr int64_t d_1b_u = 255;

@@ -58,7 +58,7 @@ class ST_0102_Parser : protected parser_base<callbacks_t>
   using parser_base<callbacks_t>::m_tags;
   using parser_base<callbacks_t>::m_tag_readers;
 public:
-  ST_0102_Parser(callbacks_t cb = callbacks_t{})
+  ST_0102_Parser(const callbacks_t& cb)
     : parser_base<callbacks_t>(klv::misb::standard_t::st_0102_security, 24, cb)
   {
     // Numeric Constraint Threshold Bounds

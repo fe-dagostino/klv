@@ -17,7 +17,7 @@ class ST_0601_Parser : public parser_base<callbacks_t>
   using parser_base<callbacks_t>::m_tags;
   using parser_base<callbacks_t>::m_tag_readers;
 public:
-  ST_0601_Parser(callbacks_t cb = callbacks_t{})
+  ST_0601_Parser(const callbacks_t& cb)
     : parser_base<callbacks_t>(klv::misb::standard_t::st_0601_uas_datalink, 144, cb)
   {
     // Reusable Mapping Domain Dimensions

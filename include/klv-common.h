@@ -89,7 +89,7 @@ enum class cb_result_t : uint8_t
 };
 
 template <typename T>
-concept callbacks_interface = requires(T                     cb, 
+concept callbacks_interface = requires(const T&              cb, 
                                        klv::misb::standard_t std,
                                        uint8_t               tag,
                                        const metadata_t&     meta,
@@ -103,6 +103,7 @@ concept callbacks_interface = requires(T                     cb,
                                        double                y
                                       )
 {
+  requires(!std::copyable<T>);
   { cb.on_unconfigured_tag (std, tag)                   } -> std::same_as<cb_result_t>;
   { cb.on_numeric_tag      (std, tag, meta)             } -> std::same_as<cb_result_t>;
   { cb.on_string_tag       (std, tag, meta)             } -> std::same_as<cb_result_t>;

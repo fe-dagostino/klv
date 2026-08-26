@@ -15,13 +15,13 @@ namespace klv {
 
 struct default_output_callbacks
 {
-  inline cb_result_t on_unconfigured_tag( klv::misb::standard_t std, uint8_t tag) noexcept(true)
+  inline cb_result_t on_unconfigured_tag( klv::misb::standard_t std, uint8_t tag) const noexcept(true)
   {
     std::cout << "Parser: " << static_cast<uint32_t>(std) << " [Tag " << std::setw(3) << (int)tag << "] not configured \n";
     return cb_result_t::success;
   }
 
-  inline cb_result_t on_numeric_tag(klv::misb::standard_t std, uint8_t tag, const metadata_t& meta) noexcept(true)
+  inline cb_result_t on_numeric_tag(klv::misb::standard_t std, uint8_t tag, const metadata_t& meta) const noexcept(true)
   {
     std::cout << "Parser: " << static_cast<uint32_t>(std) << " [Tag " << std::setw(3) << (int)tag << "] " 
               << std::left << std::setw(30) << meta.name << " : " 
@@ -29,14 +29,14 @@ struct default_output_callbacks
     return cb_result_t::success;
   }
 
-  inline cb_result_t on_string_tag(klv::misb::standard_t std, uint8_t tag, const metadata_t& meta) noexcept(true)
+  inline cb_result_t on_string_tag(klv::misb::standard_t std, uint8_t tag, const metadata_t& meta) const noexcept(true)
   {
     std::cout << "Parser: " << static_cast<uint32_t>(std) << " [Tag " << std::setw(3) << (int)tag << "] " 
               << std::left << std::setw(30) << meta.name << " : " << meta.cached_string << "\n";
     return cb_result_t::success;
   }
 
-  inline cb_result_t on_timestamp_tag(klv::misb::standard_t std, uint8_t tag, const metadata_t& meta, uint64_t raw_microseconds) noexcept(true)
+  inline cb_result_t on_timestamp_tag(klv::misb::standard_t std, uint8_t tag, const metadata_t& meta, uint64_t raw_microseconds) const noexcept(true)
   {
     std::chrono::system_clock::time_point tp{std::chrono::duration_cast<std::chrono::system_clock::duration>(std::chrono::microseconds(raw_microseconds))};
     std::time_t tt = std::chrono::system_clock::to_time_t(tp);
@@ -52,14 +52,14 @@ struct default_output_callbacks
     return cb_result_t::success;
   }
 
-  inline cb_result_t on_checksum_tag(klv::misb::standard_t std, uint8_t tag, const metadata_t& meta, uint32_t checksum) noexcept(true)
+  inline cb_result_t on_checksum_tag(klv::misb::standard_t std, uint8_t tag, const metadata_t& meta, uint32_t checksum) const noexcept(true)
   {
     std::cout << "Parser: " << static_cast<uint32_t>(std) << " [Tag " << std::setw(3) << (int)tag << "] " << std::left << std::setw(30) << meta.name << " : 0x" 
               << std::uppercase << std::hex << std::setw(4) << std::setfill('0') << checksum << "\n" << std::nouppercase << std::dec << std::setfill(' ');
     return cb_result_t::success;
   }
 
-  inline cb_result_t on_bitfield_tag(klv::misb::standard_t std, uint8_t tag, const metadata_t& meta, uint8_t byte_flags) noexcept(true)
+  inline cb_result_t on_bitfield_tag(klv::misb::standard_t std, uint8_t tag, const metadata_t& meta, uint8_t byte_flags) const noexcept(true)
   {
     std::cout << "Standard: " << static_cast<uint32_t>(std) << " [Tag " << std::setw(3) << (int)tag << "] " << std::left << std::setw(30) << meta.name << " :\n"
               << "  -> [Bit 0] Laser Rangefinder Enabled   : " << ((byte_flags & 0x01) ? "ACTIVE" : "OFF") << "\n"
@@ -73,7 +73,7 @@ struct default_output_callbacks
     return cb_result_t::success;
   }
 
-  inline cb_result_t on_pts(klv::misb::standard_t std, uint64_t raw_pts_ticks) noexcept(true)
+  inline cb_result_t on_pts(klv::misb::standard_t std, uint64_t raw_pts_ticks) const noexcept(true)
   {
     // Convert the 90kHz MPEG clock ticks directly into video timeline milliseconds
     double video_ms = (static_cast<double>(raw_pts_ticks) / 90000.0) * 1000.0;
@@ -81,32 +81,32 @@ struct default_output_callbacks
     return cb_result_t::success;
   }
 
-  inline cb_result_t on_vmti_target(klv::misb::standard_t std, uint32_t target_id, uint8_t confidence) noexcept(true)
+  inline cb_result_t on_vmti_target(klv::misb::standard_t std, uint32_t target_id, uint8_t confidence) const noexcept(true)
   {
     std::cout << "Standard: " << static_cast<uint32_t>(std) << "    -> [VMTI Target Track] ID: " << target_id 
               << " | Automation Confidence: " << (int)confidence << "%\n";
     return cb_result_t::success;
   }
 
-  inline cb_result_t on_viewport_position(klv::misb::standard_t std, uint8_t tag,  const metadata_t& meta, double x, double y) noexcept(true)
+  inline cb_result_t on_viewport_position(klv::misb::standard_t std, uint8_t tag,  const metadata_t& meta, double x, double y) const noexcept(true)
   {
     std::cout << "Standard: " << static_cast<uint32_t>(std) << " [Tag " << (int)tag << "] " << meta.name << " Pos : [" << x << ", " << y << "]\n";
     return cb_result_t::success;
   }
 
-  inline cb_result_t on_invalid_key() noexcept(true)
+  inline cb_result_t on_invalid_key() const noexcept(true)
   {
     std::cout << "on_invalid_key()" << "\n";
     return cb_result_t::success;
   }
 
-  inline cb_result_t on_length_overflow() noexcept(true)
+  inline cb_result_t on_length_overflow() const noexcept(true)
   {
     std::cout << "on_length_overflow()" << "\n";
     return cb_result_t::success;
   }
- 
-  inline cb_result_t on_payload_truncated() noexcept(true)
+
+  inline cb_result_t on_payload_truncated() const noexcept(true)
   {
     std::cout << "on_payload_truncated()" << "\n";
     return cb_result_t::success;
@@ -119,8 +119,8 @@ class parser
 {
 public:
   parser(
-          callbacks_t      cb       = callbacks_t{},
-          misb::standard_t standard = misb::standard_t::unknown
+          callbacks_t& cb,
+          misb::standard_t   standard = misb::standard_t::unknown
         )
     : m_standard{standard},
       m_callbacks(cb),
@@ -342,7 +342,7 @@ private:
   using parser_ptr_t = bool(*)(parser*, const uint8_t*, size_t) noexcept(true);
 
   misb::standard_t                       m_standard;
-  callbacks_t                            m_callbacks;
+  const callbacks_t&                     m_callbacks;
 
   std::array<parser_ptr_t, 19>           m_parsers;
   klv::misb::ST_0601_Parser<callbacks_t> m_st_0601;
