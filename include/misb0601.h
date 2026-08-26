@@ -77,6 +77,7 @@ public:
     m_tags[34] = { element_t::MappedNumeric, "Icing Detected", "enum", 0, d_1b_u, 0.0, 255.0 }; 
     m_tags[35] = { element_t::MappedNumeric, "Wind Direction", "degrees", 0, d_2b_u, 0.0, 360.0 };
     m_tags[36] = { element_t::MappedNumeric, "Wind Speed", "meters/sec", 0, d_1b_u, 0.0, 100.0 };
+    m_tags[37] = { element_t::MappedNumeric, "Static Pressure", "millibar", 0, d_2b_u, 0.0, 5000.0 };
     m_tags[38] = { element_t::MappedNumeric, "Density Altitude", "meters", 0, d_2b_u, -900.0, 19000.0 };
     m_tags[39] = { element_t::MappedNumeric, "Outside Air Temperature", "Celsius", -128, 127, -128.0, 127.0 };
 
