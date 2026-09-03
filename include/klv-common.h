@@ -3,6 +3,7 @@
 
 #include "klv-config.h"
 
+#include <span>
 #include <array>
 #include <string>
 #include <cstdint>
@@ -89,18 +90,19 @@ enum class cb_result_t : uint8_t
 };
 
 template <typename T>
-concept callbacks_interface = requires(const T&              cb, 
-                                       klv::misb::standard_t std,
-                                       uint8_t               tag,
-                                       const metadata_t&     meta,
-                                       uint64_t              raw_time,
-                                       uint32_t              checksum,
-                                       uint8_t               flags,
-                                       uint64_t              pts,
-                                       uint32_t              target_id,
-                                       uint8_t               confidence,
-                                       double                x,
-                                       double                y
+concept callbacks_interface = requires(const T&                     cb,
+                                       klv::misb::standard_t        std,
+                                       std::span<const uint8_t, 16> key,
+                                       uint8_t                      tag,
+                                       const metadata_t&            meta,
+                                       uint64_t                     raw_time,
+                                       uint32_t                     checksum,
+                                       uint8_t                      flags,
+                                       uint64_t                     pts,
+                                       uint32_t                     target_id,
+                                       uint8_t                      confidence,
+                                       double                       x,
+                                       double                       y
                                       )
 {
   requires(!std::copyable<T>);
@@ -114,7 +116,9 @@ concept callbacks_interface = requires(const T&              cb,
   { cb.on_vmti_target      (std, target_id, confidence) } -> std::same_as<cb_result_t>; /* Added for ST 0903 */
   { cb.on_viewport_position(std, tag, meta, x, y )      } -> std::same_as<cb_result_t>; /* ST 0602 Tag 18 viewport coordinate in pixels */
 
-  { cb.on_invalid_key      ()                           } -> std::same_as<cb_result_t>; /* An invalid key have been detected */
+  { cb.on_unknown_standard (key)                        } -> std::same_as<cb_result_t>; /* An unknown standard has been found */
+  { cb.on_undefined_parser (std)                        } -> std::same_as<cb_result_t>; /* No defined parser for the detected standard */
+  { cb.on_invalid_key      (key)                        } -> std::same_as<cb_result_t>; /* An invalid key have been detected */
   { cb.on_length_overflow  ()                           } -> std::same_as<cb_result_t>; /* Parsing error due wrong length */
   { cb.on_payload_truncated()                           } -> std::same_as<cb_result_t>; /* Parsing error due missing bytes accordingly with length */
 };

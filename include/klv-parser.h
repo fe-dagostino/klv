@@ -15,6 +15,10 @@ namespace klv {
 
 struct default_output_callbacks
 {
+  default_output_callbacks(){};
+
+  default_output_callbacks(const default_output_callbacks&) = delete;
+
   inline cb_result_t on_unconfigured_tag( klv::misb::standard_t std, uint8_t tag) const noexcept(true)
   {
     std::cout << "Parser: " << static_cast<uint32_t>(std) << " [Tag " << std::setw(3) << (int)tag << "] not configured \n";
@@ -94,10 +98,36 @@ struct default_output_callbacks
     return cb_result_t::success;
   }
 
-  inline cb_result_t on_invalid_key() const noexcept(true)
+  klv::cb_result_t on_undefined_parser(klv::misb::standard_t std) const noexcept(true)
   {
-    std::cout << "on_invalid_key()" << "\n";
-    return cb_result_t::success;
+    std::cout << "Standard: " << static_cast<uint32_t>(std) << " No registered parser\n";
+    return klv::cb_result_t::success;
+  }
+
+  inline cb_result_t on_unknown_standard( std::span<const uint8_t, 16> key ) const noexcept(true)
+  {
+    std::cout << "on_unknown_standard(";
+    std::cout << std::hex << std::setfill('0');
+    for (size_t i = 0; i < key.size(); ++i)
+    {
+      if (i) std::cout << ' ';
+      std::cout << std::setw(2) << static_cast<int>(key[i]);
+    }
+    std::cout << ")\n";
+    return klv::cb_result_t::success;
+  }
+
+  inline cb_result_t on_invalid_key( std::span<const uint8_t, 16> key ) const noexcept(true)
+  {
+    std::cout << "on_invalid_key(";
+    std::cout << std::hex << std::setfill('0');
+    for (size_t i = 0; i < key.size(); ++i)
+    {
+      if (i) std::cout << ' ';
+      std::cout << std::setw(2) << static_cast<int>(key[i]);
+    }
+    std::cout << ")\n";
+    return klv::cb_result_t::success;
   }
 
   inline cb_result_t on_length_overflow() const noexcept(true)
@@ -114,7 +144,7 @@ struct default_output_callbacks
 
 };
 
-template <callbacks_interface callbacks_t = default_output_callbacks>
+template <bool undefined_parser_return_value = false, callbacks_interface callbacks_t = default_output_callbacks>
 class parser
 {
 public:
@@ -130,7 +160,7 @@ public:
       m_st_0102(m_callbacks),
       m_st_0903(m_callbacks)
   {
-    m_parsers.fill([](parser*, const uint8_t*, size_t) noexcept(true) -> bool { return false; });
+    m_parsers.fill([](parser*, const uint8_t*, size_t) noexcept(true) -> bool { return undefined_parser_return_value; });
 
     m_parsers[static_cast<size_t>(klv::misb::standard_t::st_0601_uas_datalink)]          = [](parser* self, const uint8_t* payload, size_t length) noexcept(true)
                                                                                            { return self->m_st_0601.parse_packet(payload, length); };
@@ -186,6 +216,7 @@ public:
         const misb::standard_t selected_standard = identify_standard(key_ptr);
         if (selected_standard == misb::standard_t::unknown) 
         {
+          m_callbacks.on_unknown_standard( std::span<const uint8_t, 16>(key_ptr, 16) );
           cursor += 4; // Advance past current false prefix match
           continue;
         }
@@ -209,7 +240,7 @@ public:
       // Basic structural integrity guard for predictable streams
       if (key_ptr[0] != 0x06 || key_ptr[1] != 0x0E || key_ptr[2] != 0x2B || key_ptr[3] != 0x34) [[unlikely]]
       {
-        m_callbacks.on_invalid_key();
+        m_callbacks.on_invalid_key( std::span<const uint8_t, 16>(key_ptr,16) );
         return false;
       }
 
@@ -331,7 +362,10 @@ private:
     const uint8_t* payload_ptr = &buffer[len_idx];
 
     if ( m_parsers[static_cast<size_t>(standard)](this, payload_ptr, payload_length) == false )
+    {
+      m_callbacks.on_undefined_parser(standard);
       return false;
+    }
 
     // Advance cursor straight past Key, Length, and Payload to the start of the next block
     cursor = len_idx + payload_length;

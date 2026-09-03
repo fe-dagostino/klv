@@ -49,17 +49,17 @@ namespace SecurityTags {
 }
 
 /* Security Metadata Set */
-template <callbacks_interface callbacks_t>
-class ST_0102_Parser : protected parser_base<callbacks_t>
+template <callbacks_interface callbacks_t, auto no_tag_reader_return_value = cb_result_t::success>
+class ST_0102_Parser : protected parser_base<callbacks_t, no_tag_reader_return_value>
 {
-  using parser_base<callbacks_t>::callbacks;
-  using parser_base<callbacks_t>::standard;
-  using parser_base<callbacks_t>::max_tags;
-  using parser_base<callbacks_t>::m_tags;
-  using parser_base<callbacks_t>::m_tag_readers;
+  using parser_base<callbacks_t,no_tag_reader_return_value>::callbacks;
+  using parser_base<callbacks_t,no_tag_reader_return_value>::standard;
+  using parser_base<callbacks_t,no_tag_reader_return_value>::max_tags;
+  using parser_base<callbacks_t,no_tag_reader_return_value>::m_tags;
+  using parser_base<callbacks_t,no_tag_reader_return_value>::m_tag_readers;
 public:
   ST_0102_Parser(const callbacks_t& cb)
-    : parser_base<callbacks_t>(klv::misb::standard_t::st_0102_security, 24, cb)
+    : parser_base<callbacks_t,no_tag_reader_return_value>(klv::misb::standard_t::st_0102_security, 24, cb)
   {
     // Numeric Constraint Threshold Bounds
     constexpr int64_t max_1b_u = 255;

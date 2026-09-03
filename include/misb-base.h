@@ -11,7 +11,7 @@ namespace klv
 namespace misb
 {
 
-template <callbacks_interface callbacks_t>
+template <callbacks_interface callbacks_t, auto no_tag_reader_return_value>
 class parser_base
 {
 protected:
@@ -20,21 +20,21 @@ protected:
   {
     m_tags.fill({ element_t::Unconfigured });
 
-    m_tag_readers.fill( [](parser_base<callbacks_t>* , uint8_t , const uint8_t* , size_t , metadata_t& ) noexcept(true) -> cb_result_t { return cb_result_t::success; } );
+    m_tag_readers.fill( [](parser_base<callbacks_t,no_tag_reader_return_value>* , uint8_t , const uint8_t* , size_t , metadata_t& ) noexcept(true) -> cb_result_t { return no_tag_reader_return_value; } );
 
-    m_tag_readers[static_cast<size_t>(klv::element_t::Unconfigured)]  = [](parser_base<callbacks_t>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
+    m_tag_readers[static_cast<size_t>(klv::element_t::Unconfigured)]  = [](parser_base<callbacks_t,no_tag_reader_return_value>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
       {
         meta.cached_string.assign(reinterpret_cast<const char*>(buffer), length);
         return self->callbacks().on_unconfigured_tag(self->m_std, tag_id);
       };
 
-    m_tag_readers[static_cast<size_t>(klv::element_t::String)]        = [](parser_base<callbacks_t>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
+    m_tag_readers[static_cast<size_t>(klv::element_t::String)]        = [](parser_base<callbacks_t,no_tag_reader_return_value>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
       {
         meta.cached_string.assign(reinterpret_cast<const char*>(buffer), length);
         return self->callbacks().on_string_tag(self->m_std, tag_id, meta);
       };
 
-    m_tag_readers[static_cast<size_t>(klv::element_t::MappedNumeric)] = [](parser_base<callbacks_t>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
+    m_tag_readers[static_cast<size_t>(klv::element_t::MappedNumeric)] = [](parser_base<callbacks_t,no_tag_reader_return_value>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
       {
         uint64_t raw        = self->extract_raw_bytes(buffer, length);
         int64_t  s_raw      = self->apply_sign_extension(raw, length, meta.domain_min);
@@ -47,14 +47,14 @@ protected:
         return self->callbacks().on_numeric_tag(self->m_std, tag_id, meta);
       };
 
-    m_tag_readers[static_cast<size_t>(klv::element_t::Timestamp)]     = [](parser_base<callbacks_t>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
+    m_tag_readers[static_cast<size_t>(klv::element_t::Timestamp)]     = [](parser_base<callbacks_t,no_tag_reader_return_value>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
       {
         uint64_t raw_time = self->extract_raw_bytes(buffer, length);
         meta.cached_numeric = static_cast<double>(raw_time);
         return self->callbacks().on_timestamp_tag(self->m_std, tag_id, meta, raw_time);
       };
 
-    m_tag_readers[static_cast<size_t>(klv::element_t::Checksum)]      = [](parser_base<callbacks_t>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
+    m_tag_readers[static_cast<size_t>(klv::element_t::Checksum)]      = [](parser_base<callbacks_t,no_tag_reader_return_value>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
       {
         switch ( self->m_std )
         {
@@ -75,7 +75,7 @@ protected:
         return self->callbacks().on_checksum_tag(self->m_std, tag_id, meta, raw_checksum);
       };
 
-    m_tag_readers[static_cast<size_t>(klv::element_t::Bitfield)]      = [](parser_base<callbacks_t>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
+    m_tag_readers[static_cast<size_t>(klv::element_t::Bitfield)]      = [](parser_base<callbacks_t,no_tag_reader_return_value>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
       {
         if (length == 0)
           return self->callbacks().on_bitfield_tag(self->m_std, tag_id, meta, 0x00);
@@ -83,7 +83,7 @@ protected:
         return self->callbacks().on_bitfield_tag(self->m_std, tag_id, meta, buffer[0]);
       };
 
-    m_tag_readers[static_cast<size_t>(klv::element_t::MappedCode)]    = [](parser_base<callbacks_t>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
+    m_tag_readers[static_cast<size_t>(klv::element_t::MappedCode)]    = [](parser_base<callbacks_t,no_tag_reader_return_value>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
       {
         uint64_t raw = self->extract_raw_bytes(buffer, length);
         std::tie(meta.cached_numeric,meta.out_of_range) = self->boundary_check(raw, meta);
@@ -191,7 +191,7 @@ protected:
   }
 
 protected:
-  using tag_reader_ptr_t = klv::cb_result_t(*)(parser_base<callbacks_t>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true);
+  using tag_reader_ptr_t = klv::cb_result_t(*)(parser_base<callbacks_t,no_tag_reader_return_value>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true);
 
   const standard_t                  m_std;
   const uint32_t                    m_max_tags;    /* used to specify the max expected value when reading the tag id and discarding all that is bigger */

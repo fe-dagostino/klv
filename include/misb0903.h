@@ -43,17 +43,17 @@ namespace TargetReportTags
 
 
 /* VMTI Metadata Set */
-template <callbacks_interface callbacks_t>
-class ST_0903_Parser : public parser_base<callbacks_t>
+template <callbacks_interface callbacks_t, auto no_tag_reader_return_value = cb_result_t::success>
+class ST_0903_Parser : public parser_base<callbacks_t, no_tag_reader_return_value>
 {
-  using parser_base<callbacks_t>::callbacks;
-  using parser_base<callbacks_t>::standard;
-  using parser_base<callbacks_t>::max_tags;
-  using parser_base<callbacks_t>::m_tags;
-  using parser_base<callbacks_t>::m_tag_readers;
+  using parser_base<callbacks_t, no_tag_reader_return_value>::callbacks;
+  using parser_base<callbacks_t, no_tag_reader_return_value>::standard;
+  using parser_base<callbacks_t, no_tag_reader_return_value>::max_tags;
+  using parser_base<callbacks_t, no_tag_reader_return_value>::m_tags;
+  using parser_base<callbacks_t, no_tag_reader_return_value>::m_tag_readers;
 public:
   ST_0903_Parser(const callbacks_t& cb)
-    : parser_base<callbacks_t>(klv::misb::standard_t::st_0903_vmti_track, 102, cb)
+    : parser_base<callbacks_t,no_tag_reader_return_value>(klv::misb::standard_t::st_0903_vmti_track, 102, cb)
   {
     constexpr int64_t d_1b_u = 255;
     constexpr int64_t d_2b_u = 65535;
@@ -179,7 +179,7 @@ private:
 
         if (sub_tag == TargetReportTags::TargetId)
         {
-          target_id = static_cast<uint32_t>(parser_base<callbacks_t>::extract_raw_bytes(&sub_ptr[sub_idx], sub_len));
+          target_id = static_cast<uint32_t>(parser_base<callbacks_t,no_tag_reader_return_value>::extract_raw_bytes(&sub_ptr[sub_idx], sub_len));
         }
         else if (sub_tag == TargetReportTags::TargetConfidence)
         {

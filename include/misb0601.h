@@ -10,15 +10,15 @@ namespace misb
 {
 
 /* UAS Telemetry Set */
-template <callbacks_interface callbacks_t>
-class ST_0601_Parser : public parser_base<callbacks_t>
+template <callbacks_interface callbacks_t, auto no_tag_reader_return_value = cb_result_t::success>
+class ST_0601_Parser : public parser_base<callbacks_t, no_tag_reader_return_value>
 {
-  using parser_base<callbacks_t>::max_tags;
-  using parser_base<callbacks_t>::m_tags;
-  using parser_base<callbacks_t>::m_tag_readers;
+  using parser_base<callbacks_t,no_tag_reader_return_value>::max_tags;
+  using parser_base<callbacks_t,no_tag_reader_return_value>::m_tags;
+  using parser_base<callbacks_t,no_tag_reader_return_value>::m_tag_readers;
 public:
   ST_0601_Parser(const callbacks_t& cb)
-    : parser_base<callbacks_t>(klv::misb::standard_t::st_0601_uas_datalink, 144, cb)
+    : parser_base<callbacks_t,no_tag_reader_return_value>(klv::misb::standard_t::st_0601_uas_datalink, 144, cb)
   {
     // Reusable Mapping Domain Dimensions
     constexpr int64_t d_1b_u = 255;          // 1-byte Unsigned Domain [0, 255]

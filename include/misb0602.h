@@ -25,19 +25,19 @@ namespace AnnotationTags
 }
 
 /* Annotation Metadata Set Parser */
-template <callbacks_interface callbacks_t>
-class ST_0602_Parser : public parser_base<callbacks_t>
+template <callbacks_interface callbacks_t, auto no_tag_reader_return_value = cb_result_t::success>
+class ST_0602_Parser : public parser_base<callbacks_t, no_tag_reader_return_value>
 {
-  using parser_base<callbacks_t>::callbacks;
-  using parser_base<callbacks_t>::standard;
-  using parser_base<callbacks_t>::max_tags;
-  using parser_base<callbacks_t>::m_tags;
-  using parser_base<callbacks_t>::m_tag_readers;
+  using parser_base<callbacks_t,no_tag_reader_return_value>::callbacks;
+  using parser_base<callbacks_t,no_tag_reader_return_value>::standard;
+  using parser_base<callbacks_t,no_tag_reader_return_value>::max_tags;
+  using parser_base<callbacks_t,no_tag_reader_return_value>::m_tags;
+  using parser_base<callbacks_t,no_tag_reader_return_value>::m_tag_readers;
 
 public:
   /***/
   ST_0602_Parser(const callbacks_t& cb)
-    : parser_base<callbacks_t>(klv::misb::standard_t::st_0602_annotation, 22, cb)
+    : parser_base<callbacks_t,no_tag_reader_return_value>(klv::misb::standard_t::st_0602_annotation, 22, cb)
   {
     constexpr int64_t d_1b_u = 255;
     constexpr int64_t d_3b_u = 16777215; 
@@ -54,9 +54,9 @@ public:
     m_tags[AnnotationTags::ViewportHeight]     = { element_t::MappedNumeric, "Viewport Height Pack"         , "%", 0, d_3b_u, 0.0, 100.0 };
     m_tags[AnnotationTags::SpatialExtent]      = { element_t::MappedNumeric, "Spatial Extent Parameter Pack", "%", 0, d_3b_u, 0.0, 100.0 };
 
-    m_tag_readers[static_cast<size_t>(element_t::NestedPack)] = [](parser_base<callbacks_t>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
+    m_tag_readers[static_cast<size_t>(element_t::NestedPack)] = [](parser_base<callbacks_t,no_tag_reader_return_value>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
       {
-        auto* parser = static_cast<ST_0602_Parser<callbacks_t>*>(self);
+        auto* parser = static_cast<ST_0602_Parser<callbacks_t,no_tag_reader_return_value>*>(self);
 
         if (tag_id == AnnotationTags::ViewportPosition) [[likely]]
         {

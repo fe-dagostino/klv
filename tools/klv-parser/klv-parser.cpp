@@ -64,10 +64,35 @@ struct test_callbacks_t
     return klv::cb_result_t::success;
   }
 
-  // Parser error hooks
-  klv::cb_result_t on_invalid_key() const noexcept(true)
+  klv::cb_result_t on_undefined_parser(klv::misb::standard_t std) const noexcept(true)
   {
-    std::cerr << "[Error] Invalid SMPTE key prefix found.\n";
+    std::cout << "Standard: " << static_cast<uint32_t>(std) << " No registered parser\n";
+    return klv::cb_result_t::success;
+  }
+
+  // Parser error hooks
+
+  klv::cb_result_t on_unknown_standard( std::span<const uint8_t, 16> key ) const noexcept(true)
+  {
+    std::cout << "on_unknown_standard(";
+    std::cout << std::hex << std::setfill('0');
+    for (size_t i = 0; i < key.size(); ++i) {
+        if (i) std::cout << ' ';
+        std::cout << std::setw(2) << static_cast<int>(key[i]);
+    }
+    std::cout << ")\n";
+    return klv::cb_result_t::success;
+  }
+
+  klv::cb_result_t on_invalid_key( std::span<const uint8_t, 16> key ) const noexcept(true)
+  {
+    std::cout << "on_invalid_key(";
+    std::cout << std::hex << std::setfill('0');
+    for (size_t i = 0; i < key.size(); ++i) {
+        if (i) std::cout << ' ';
+        std::cout << std::setw(2) << static_cast<int>(key[i]);
+    }
+    std::cout << ")\n";
     return klv::cb_result_t::success;
   }
 
@@ -127,8 +152,11 @@ int main(int argc, char* argv[])
 
   /* Initialize parser running your new klv::callbacks concept target */
   test_callbacks_t              cb;
-  klv::parser<test_callbacks_t> parser(cb);
-  //klv::parser parser; /* uncomment to use the default output implementation */
+  klv::parser<true,test_callbacks_t> parser(cb);
+
+  /* uncomment to use the default output implementation */
+  //klv::default_output_callbacks def_cb;
+  //klv::parser parser(def_cb); 
 
   /* Execute the parser over the complete file memory chunk */
   bool status = parser.parse(file_buffer.data(), file_buffer.size());
