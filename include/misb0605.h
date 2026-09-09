@@ -24,8 +24,8 @@ class ST_0605_Parser : public parser_base<callbacks_t,no_tag_reader_return_value
   using parser_base<callbacks_t,no_tag_reader_return_value>::m_tags;
   using parser_base<callbacks_t,no_tag_reader_return_value>::m_tag_readers;
 public:
-  ST_0605_Parser(const callbacks_t& cb)
-    : parser_base<callbacks_t,no_tag_reader_return_value>(klv::misb::standard_t::st_0605_microsecond_timestamp, 3, cb)
+  ST_0605_Parser(callbacks_t& cbs)
+    : parser_base<callbacks_t,no_tag_reader_return_value>(klv::misb::standard_t::st_0605_microsecond_timestamp, 3, cbs)
   {
     // Map out the standard flat root tag definitions for ST 0605
     m_tags[TimeStampTags::TimeStatus]         = { element_t::Bitfield,  "Time Sync Clock Status" };

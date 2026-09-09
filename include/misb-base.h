@@ -15,8 +15,8 @@ template <callbacks_interface callbacks_t, auto no_tag_reader_return_value>
 class parser_base
 {
 protected:
-  parser_base( standard_t std, uint32_t max_tags, const callbacks_t& cb)
-    : m_std(std), m_max_tags(max_tags), m_callbacks(cb)
+  parser_base( standard_t std, uint32_t max_tags, callbacks_t& cbs)
+    : m_std(std), m_max_tags(max_tags), m_callbacks(cbs)
   {
     m_tags.fill({ element_t::Unconfigured });
 
@@ -197,7 +197,7 @@ protected:
   const uint32_t                    m_max_tags;    /* used to specify the max expected value when reading the tag id and discarding all that is bigger */
   std::array<metadata_t, 256>       m_tags;
   std::array<tag_reader_ptr_t, 256> m_tag_readers;
-  const callbacks_t&                m_callbacks;
+  callbacks_t&                      m_callbacks;
 };
 
 } /* namespace misb */

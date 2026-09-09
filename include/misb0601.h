@@ -17,8 +17,8 @@ class ST_0601_Parser : public parser_base<callbacks_t, no_tag_reader_return_valu
   using parser_base<callbacks_t,no_tag_reader_return_value>::m_tags;
   using parser_base<callbacks_t,no_tag_reader_return_value>::m_tag_readers;
 public:
-  ST_0601_Parser(const callbacks_t& cb)
-    : parser_base<callbacks_t,no_tag_reader_return_value>(klv::misb::standard_t::st_0601_uas_datalink, 144, cb)
+  ST_0601_Parser(callbacks_t& cbs)
+    : parser_base<callbacks_t,no_tag_reader_return_value>(klv::misb::standard_t::st_0601_uas_datalink, 144, cbs)
   {
     // Reusable Mapping Domain Dimensions
     constexpr int64_t d_1b_u = 255;          // 1-byte Unsigned Domain [0, 255]

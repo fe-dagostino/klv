@@ -91,7 +91,7 @@ enum class cb_result_t : uint8_t
 };
 
 template <typename T>
-concept callbacks_interface = requires(const T&                     cb,
+concept callbacks_interface = requires(T&                           cb,
                                        klv::misb::standard_t        standard,
                                        std::span<const uint8_t, 16> key,
                                        uint8_t                      tag,

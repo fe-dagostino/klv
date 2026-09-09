@@ -149,11 +149,11 @@ class parser
 {
 public:
   parser(
-          callbacks_t& cb,
+          callbacks_t& cbs,
           misb::standard_t   standard = misb::standard_t::unknown
         )
     : m_standard{standard},
-      m_callbacks(cb),
+      m_callbacks(cbs),
       m_st_0601(m_callbacks),
       m_st_0602(m_callbacks),
       m_st_0605(m_callbacks),
@@ -376,7 +376,7 @@ private:
   using parser_ptr_t = bool(*)(parser*, const uint8_t*, size_t) noexcept(true);
 
   misb::standard_t                       m_standard;
-  const callbacks_t&                     m_callbacks;
+  callbacks_t&                           m_callbacks;
 
   std::array<parser_ptr_t, 19>           m_parsers;
   klv::misb::ST_0601_Parser<callbacks_t> m_st_0601;

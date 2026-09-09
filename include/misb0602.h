@@ -36,8 +36,8 @@ class ST_0602_Parser : public parser_base<callbacks_t, no_tag_reader_return_valu
 
 public:
   /***/
-  ST_0602_Parser(const callbacks_t& cb)
-    : parser_base<callbacks_t,no_tag_reader_return_value>(klv::misb::standard_t::st_0602_annotation, 22, cb)
+  ST_0602_Parser(callbacks_t& cbs)
+    : parser_base<callbacks_t,no_tag_reader_return_value>(klv::misb::standard_t::st_0602_annotation, 22, cbs)
   {
     constexpr int64_t d_1b_u = 255;
     constexpr int64_t d_3b_u = 16777215; 

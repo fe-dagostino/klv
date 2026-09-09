@@ -58,8 +58,8 @@ class ST_0102_Parser : protected parser_base<callbacks_t, no_tag_reader_return_v
   using parser_base<callbacks_t,no_tag_reader_return_value>::m_tags;
   using parser_base<callbacks_t,no_tag_reader_return_value>::m_tag_readers;
 public:
-  ST_0102_Parser(const callbacks_t& cb)
-    : parser_base<callbacks_t,no_tag_reader_return_value>(klv::misb::standard_t::st_0102_security, 24, cb)
+  ST_0102_Parser(callbacks_t& cbs)
+    : parser_base<callbacks_t,no_tag_reader_return_value>(klv::misb::standard_t::st_0102_security, 24, cbs)
   {
     // Numeric Constraint Threshold Bounds
     constexpr int64_t max_1b_u = 255;
