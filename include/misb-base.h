@@ -103,7 +103,7 @@ public:
   { return m_max_tags;}
 
   [[nodiscard]]
-  inline constexpr const callbacks_t& callbacks() const noexcept(true)
+  inline constexpr callbacks_t&       callbacks() const noexcept(true)
   { return m_callbacks;}
 
   [[nodiscard]]
