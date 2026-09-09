@@ -7,6 +7,7 @@
 #include <array>
 #include <string>
 #include <cstdint>
+#include <concepts>
 
 namespace klv {
 
@@ -91,10 +92,10 @@ enum class cb_result_t : uint8_t
 
 template <typename T>
 concept callbacks_interface = requires(const T&                     cb,
-                                       klv::misb::standard_t        std,
+                                       klv::misb::standard_t        standard,
                                        std::span<const uint8_t, 16> key,
                                        uint8_t                      tag,
-                                       const metadata_t&            meta,
+                                       const klv::metadata_t&       meta,
                                        uint64_t                     raw_time,
                                        uint32_t                     checksum,
                                        uint8_t                      flags,
@@ -106,21 +107,21 @@ concept callbacks_interface = requires(const T&                     cb,
                                       )
 {
   requires(!std::copyable<T>);
-  { cb.on_unconfigured_tag (std, tag)                   } -> std::same_as<cb_result_t>;
-  { cb.on_numeric_tag      (std, tag, meta)             } -> std::same_as<cb_result_t>;
-  { cb.on_string_tag       (std, tag, meta)             } -> std::same_as<cb_result_t>;
-  { cb.on_timestamp_tag    (std, tag, meta, raw_time)   } -> std::same_as<cb_result_t>;
-  { cb.on_checksum_tag     (std, tag, meta, checksum)   } -> std::same_as<cb_result_t>;
-  { cb.on_bitfield_tag     (std, tag, meta, flags)      } -> std::same_as<cb_result_t>;
-  { cb.on_pts              (std, pts)                   } -> std::same_as<cb_result_t>; /* Added for ST 0604 timestamps */
-  { cb.on_vmti_target      (std, target_id, confidence) } -> std::same_as<cb_result_t>; /* Added for ST 0903 */
-  { cb.on_viewport_position(std, tag, meta, x, y )      } -> std::same_as<cb_result_t>; /* ST 0602 Tag 18 viewport coordinate in pixels */
+  { cb.on_unconfigured_tag (standard, tag)                   } -> std::same_as<klv::cb_result_t>;
+  { cb.on_numeric_tag      (standard, tag, meta)             } -> std::same_as<klv::cb_result_t>;
+  { cb.on_string_tag       (standard, tag, meta)             } -> std::same_as<klv::cb_result_t>;
+  { cb.on_timestamp_tag    (standard, tag, meta, raw_time)   } -> std::same_as<klv::cb_result_t>;
+  { cb.on_checksum_tag     (standard, tag, meta, checksum)   } -> std::same_as<klv::cb_result_t>;
+  { cb.on_bitfield_tag     (standard, tag, meta, flags)      } -> std::same_as<klv::cb_result_t>;
+  { cb.on_pts              (standard, pts)                   } -> std::same_as<klv::cb_result_t>; /* Added for ST 0604 timestamps */
+  { cb.on_vmti_target      (standard, target_id, confidence) } -> std::same_as<klv::cb_result_t>; /* Added for ST 0903 */
+  { cb.on_viewport_position(standard, tag, meta, x, y )      } -> std::same_as<klv::cb_result_t>; /* ST 0602 Tag 18 viewport coordinate in pixels */
 
-  { cb.on_unknown_standard (key)                        } -> std::same_as<cb_result_t>; /* An unknown standard has been found */
-  { cb.on_undefined_parser (std)                        } -> std::same_as<cb_result_t>; /* No defined parser for the detected standard */
-  { cb.on_invalid_key      (key)                        } -> std::same_as<cb_result_t>; /* An invalid key have been detected */
-  { cb.on_length_overflow  ()                           } -> std::same_as<cb_result_t>; /* Parsing error due wrong length */
-  { cb.on_payload_truncated()                           } -> std::same_as<cb_result_t>; /* Parsing error due missing bytes accordingly with length */
+  { cb.on_unknown_standard (key)                             } -> std::same_as<klv::cb_result_t>; /* An unknown standard has been found */
+  { cb.on_undefined_parser (standard)                        } -> std::same_as<klv::cb_result_t>; /* No defined parser for the detected standard */
+  { cb.on_invalid_key      (key)                             } -> std::same_as<klv::cb_result_t>; /* An invalid key have been detected */
+  { cb.on_length_overflow  ()                                } -> std::same_as<klv::cb_result_t>; /* Parsing error due wrong length */
+  { cb.on_payload_truncated()                                } -> std::same_as<klv::cb_result_t>; /* Parsing error due missing bytes accordingly with length */
 };
 
 } /* namespace klv */
