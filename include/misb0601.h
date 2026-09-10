@@ -96,7 +96,7 @@ public:
     m_tags[49] = { element_t::MappedNumeric, "Platform Roll Angle Full", "degrees", -d_4b_s, d_4b_s, -180.0, 180.0 };
     m_tags[50] = { element_t::MappedNumeric, "Platform Pitch Angle Full", "degrees", -d_2b_s, d_2b_s, -90.0, 90.0 };
     m_tags[57] = { element_t::MappedNumeric, "Ground Range", "meters", 0, d_4b_u, 0.0, 5000000.0 };
-    m_tags[62] = { element_t::MappedCode   , "Laser PRF Code", "code", 0, d_2b_u, 1111.0, 8888.0 };
+    m_tags[62] = { element_t::MappedCode   , "Laser PRF Code", "code", 0, d_2b_u, 111.0, 8888.0 };
     m_tags[63] = { element_t::MappedNumeric, "Sensor FOV Name", "enum", 0, d_1b_u, 0.0, 255.0 };
     m_tags[64] = { element_t::MappedNumeric, "Platform Mag Heading", "degrees", 0, d_2b_u, 0.0, 360.0 };
     m_tags[65] = { element_t::MappedNumeric, "UAS Datalink LS Version", "version", 0, d_1b_u, 0.0, 255.0 };
