@@ -40,7 +40,7 @@ protected:
         int64_t  s_raw      = self->apply_sign_extension(raw, length, meta.domain_min);
         meta.cached_numeric = self->scale_value(s_raw, meta);
 
-        std::tie(meta.cached_numeric,meta.out_of_range) = self->boundary_check(meta.cached_numeric, meta);
+        meta.out_of_range = self->is_out_of_range(meta);
         if ( meta.out_of_range == true )
           return cb_result_t::failed;
 
@@ -85,8 +85,8 @@ protected:
 
     m_tag_readers[static_cast<size_t>(klv::element_t::MappedCode)]    = [](parser_base<callbacks_t,no_tag_reader_return_value>* self, uint8_t tag_id, const uint8_t* buffer, size_t length, metadata_t& meta) noexcept(true) -> cb_result_t
       {
-        uint64_t raw = self->extract_raw_bytes(buffer, length);
-        std::tie(meta.cached_numeric,meta.out_of_range) = self->boundary_check(raw, meta);
+        meta.cached_numeric = self->extract_raw_bytes(buffer, length);
+        meta.out_of_range = self->is_out_of_range(meta);
 
         return self->callbacks().on_numeric_tag(self->m_std, tag_id, meta);
       };
@@ -180,14 +180,20 @@ protected:
     return meta.range_min + (static_cast<double>(s_raw) - static_cast<double>(meta.domain_min)) * scale;
   }
 
-  /***/
+  /**
+   * Check if \param meta.cached_numeric is in the range or not.
+   * \return true if if the value is out of range.
+   *         In this case application should use meta.special_value.
+   * \return false if the value is in the range.
+   *         In this case application can use meta.cached_numeric.
+  */
   [[nodiscard]]
-  inline constexpr std::pair<int64_t,bool> boundary_check(uint64_t raw, const metadata_t& meta) const noexcept(true)
+  inline constexpr bool is_out_of_range(const metadata_t& meta) const noexcept(true)
   {
     if ( (meta.cached_numeric >= meta.range_min) && (meta.cached_numeric <= meta.range_max) )
-      return {raw,false};
+      return false;
 
-    return {meta.special_value,true};
+    return true;
   }
 
 protected:

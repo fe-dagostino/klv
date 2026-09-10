@@ -27,9 +27,18 @@ struct default_output_callbacks
 
   inline cb_result_t on_numeric_tag(klv::misb::standard_t std, uint8_t tag, const metadata_t& meta) const noexcept(true)
   {
-    std::cout << "Parser: " << static_cast<uint32_t>(std) << " [Tag " << std::setw(3) << (int)tag << "] " 
-              << std::left << std::setw(30) << meta.name << " : " 
-              << std::right << std::setw(12) << meta.cached_numeric << " [" << meta.units << "]\n";
+    if ( meta.out_of_range == true )
+    {
+      std::cout << "Parser: " << static_cast<uint32_t>(std) << " [Tag " << std::setw(3) << (int)tag << "] "
+                << std::left << std::setw(30) << meta.name << " : (OUT OF RANGE) "
+                << std::right << std::fixed << std::setprecision(6) << std::setw(12) << meta.special_value << "\n";
+    }
+    else
+    {
+      std::cout << "Parser: " << static_cast<uint32_t>(std) << " [Tag " << std::setw(3) << (int)tag << "] "
+                << std::left << std::setw(30) << meta.name << " : "
+                << std::right << std::fixed << std::setprecision(6) << std::setw(12) << meta.cached_numeric << " [" << meta.units << "]\n";
+    }
     return cb_result_t::success;
   }
 
